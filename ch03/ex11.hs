@@ -1,0 +1,1 @@
+data Direction = LEFT | RIGHT | STRAIGHT deriving (Show)
