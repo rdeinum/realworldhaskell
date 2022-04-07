@@ -1,3 +1,6 @@
+-- 7. Write your own definition of the standard takeWhile function, first using explicit
+-- recursion, and then foldr .
+
 takeWhile' :: (a -> Bool) -> [a] -> [a]
 takeWhile' _ [] = []
 takeWhile' predicate (x:xs)

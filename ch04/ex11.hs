@@ -1,3 +1,16 @@
+-- 8. The Data.List module defines a function, groupBy , which has the following type:
+-- -- file: ch04/ch04.exercises.hs
+-- groupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+-- 9. Use ghci to load the Data.List module and figure out what groupBy does, then
+-- write your own implementation using a fold.
+-- 10. How many of the following Prelude functions can you rewrite using list folds?
+-- • any
+-- • cycle
+-- • words
+-- 98 | Chapter 4: Functional Programming• unlines
+-- For those functions where you can use either foldl' or foldr , which is more ap-
+-- propriate in each case?
+
 import Data.Char
 
 groupBy' :: Eq a => (a -> a -> Bool) -> [a] -> [[a]]
