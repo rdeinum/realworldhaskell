@@ -1,20 +1,20 @@
 # Chapter 5
 
-# Example 1
+## Example 1
 
 ```bash
 ghc SimpleJSON.hs
 ghc -o simple Main.hs
 ```
 
-# Example 2
+## Example 2
 
 ```bash
 ghci> :l PutJSON.hs
 ghci> putJValue (JObject [("foo", JNumber 1), ("bar", JBool False)])
 ```
 
-# Example 3
+## Example 3
 
 ```bash
 ghci> :l PrettyJSON.hs
