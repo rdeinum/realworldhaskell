@@ -1,4 +1,4 @@
-module Prettify (Doc, empty, char, text, line, (<++>), double, fsep, compact) where
+module Prettify (Doc, empty, char, text, line, (<++>), double, fsep, compact, pretty) where
 
 data Doc = Empty
          | Char Char
@@ -43,7 +43,7 @@ flatten (x `Union` _) = flatten x
 flatten other         = other
 
 compact :: Doc -> String
-compact x = transform [x]
+compact doc = transform [doc]
   where transform []     = ""
         transform (d:ds) =
           case d of
@@ -53,3 +53,23 @@ compact x = transform [x]
             Line         -> '\n' : transform ds
             a `Concat` b -> transform (a:b:ds)
             _ `Union` b  -> transform (b:ds)
+
+pretty :: Int -> Doc -> String
+pretty width doc = transform 0 [doc]
+  where transform col (d:ds) =
+          case d of
+            Empty              -> transform col ds
+            Char c             -> c : transform (col + 1) ds
+            Text s             -> s ++ transform (col + length s) ds
+            Line               -> '\n' : transform 0 ds
+            a `Concat` b       -> transform col (a:b:ds)
+            fline `Union` line -> nicest col (transform col (fline:ds)) (transform col (line:ds))
+        transform _ _        = ""
+        nicest col a b
+          | a `fits` (width - col) = a 
+          | otherwise              = b
+
+fits :: String -> Int -> Bool
+fits "" _            = True
+fits ('\n':_) _      = True
+fits string maxWidth = length string - maxWidth < 0

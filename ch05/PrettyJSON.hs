@@ -25,7 +25,7 @@ string :: String -> Doc
 string = enclose '"' '"' . text . escapeString
 
 escapeString :: String -> String
-escapeString = concat . map escapeChar
+escapeString = concatMap escapeChar
 
 escapeChar :: Char -> String
 escapeChar x = fromMaybe [x] $ maybeSimpleEscapeChar x <|> maybeHexEscapeChar x
