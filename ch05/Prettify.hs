@@ -1,10 +1,4 @@
-module Prettify (Doc, string, text, double) where
-
-import Control.Applicative((<|>))
-import Data.Bits(shiftR, (.&.))
-import Data.Char(ord)
-import Data.Maybe(fromMaybe)
-import Numeric(showHex)
+module Prettify (Doc, empty, char, text, line, (<++>), double, fsep, compact) where
 
 data Doc = Empty
          | Char Char
@@ -14,45 +8,48 @@ data Doc = Empty
          | Union Doc Doc
            deriving (Show, Eq)
 
+empty :: Doc
+empty = Empty
+
+char :: Char -> Doc
+char = Char
+
 text :: String -> Doc
 text ""  = Empty
 text xs = Text xs
 
+line :: Doc
+line = Line
+
+(<++>) :: Doc -> Doc -> Doc
+x <++> Empty = x
+Empty <++> y = y
+x <++> y     = x `Concat` y
+
 double :: Double -> Doc
 double = text . show
 
-string :: String -> Doc
-string = text . escapeString
+fsep :: [Doc] -> Doc
+fsep = foldr (</>) empty
 
-escapeString :: String -> String
-escapeString = concat . map escapeChar
+(</>) :: Doc -> Doc -> Doc
+x </> y = x <++> softline <++> y
+  where softline = flatten line `Union` line
 
-escapeChar :: Char -> String
-escapeChar x = fromMaybe [x] $ maybeSimpleEscapeChar x <|> maybeHexEscapeChar x
+flatten :: Doc -> Doc
+flatten (x `Concat` y) = flatten x `Concat` flatten y
+flatten Line          = char ' '
+flatten (x `Union` _) = flatten x
+flatten other         = other
 
-maybeSimpleEscapeChar :: Char -> Maybe String
-maybeSimpleEscapeChar x = lookup x simpleEscapes
-
-simpleEscapes :: [(Char, String)]
-simpleEscapes = zipWith escape "\b\n\f\r\t\\\"/" "bnfrt\\\"/"
-  where escape x y = (x, ['\\', y])
-
-maybeHexEscapeChar :: Char -> Maybe String
-maybeHexEscapeChar x
-  | x < ' ' || x == '\x7f' || x > '\xff' = Just $ hexEscapeChar x
-  | otherwise                            = Nothing
-
-hexEscapeChar :: Char -> String
-hexEscapeChar x
-  | y < 0x10000 = hexify y
-  | otherwise   = astral (y - 0x10000)
-  where y = ord x
-
-hexify :: Int -> String
-hexify x = "\\u" ++ replicate (4 - length h) '0' ++ h
-  where h = showHex x ""
-
-astral :: Int -> String
-astral x = hexify (a + 0xd800) ++ hexify (b + 0xdc00)
-  where a = (x `shiftR` 10) .&. 0x3ff
-        b = x .&. 0x3ff
+compact :: Doc -> String
+compact x = transform [x]
+  where transform []     = ""
+        transform (d:ds) =
+          case d of
+            Empty        -> transform ds
+            Char c       -> c : transform ds
+            Text s       -> s ++ transform ds
+            Line         -> '\n' : transform ds
+            a `Concat` b -> transform (a:b:ds)
+            _ `Union` b  -> transform (b:ds)
