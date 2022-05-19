@@ -1,4 +1,5 @@
-module Prettify (Doc, empty, char, text, line, (<++>), double, fsep, compact, pretty) where
+module Prettify (Doc, empty, char, text, line, (<++>), double, fsep, compact, pretty, fill) where
+import Text.XHtml.Strict (docType)
 
 data Doc = Empty
          | Char Char
@@ -70,6 +71,11 @@ pretty width doc = transform 0 [doc]
           | otherwise              = b
 
 fits :: String -> Int -> Bool
-fits "" _            = True
-fits ('\n':_) _      = True
-fits string maxWidth = length string - maxWidth < 0
+fits "" _         = True
+fits ('\n':_) _   = True
+fits string width = width - length string >= 0
+
+fill :: Int -> Doc -> Doc
+fill width doc
+  | width - (length . pretty width $ doc) > 0 = fill width $ doc <++> char ' '
+  | otherwise                                 = doc
