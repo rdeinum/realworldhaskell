@@ -1,4 +1,4 @@
-module Prettify (Doc, empty, char, text, line, (<++>), double, fsep, compact, pretty, fill) where
+module Prettify (Doc, empty, char, text, line, (<++>), double, fsep, compact, pretty, fill, indent) where
 import Text.XHtml.Strict (docType)
 
 data Doc = Empty
@@ -79,3 +79,23 @@ fill :: Int -> Doc -> Doc
 fill width doc
   | width - (length . pretty width $ doc) > 0 = fill width $ doc <++> char ' '
   | otherwise                                 = doc
+
+indent :: Int -> Doc -> String
+indent ind doc = indent' 0 ind $ transform [doc]
+  where transform []     = ""
+        transform (d:ds) =
+          case d of
+            Empty        -> transform ds
+            Line         -> transform ds
+            Char c       -> c:transform ds
+            Text s       -> s ++ transform ds
+            a `Concat` b -> transform (a:b:ds)
+            _ `Union` b  -> transform (b:ds)
+
+indent' :: Int -> Int -> String -> String
+indent' lvl step (x:xs)
+  | x `elem` "{(["   = x : indent' (lvl + step) step ('\n':xs)
+  | x `elem` "})]"   = '\n' : replicate (lvl - step) ' ' ++ [x] ++ indent' step (lvl - step) ('\n':xs)
+  | x == '\n'        = x : replicate lvl ' ' ++ indent' lvl step xs
+  | otherwise        = x : indent' lvl step xs
+indent' _ _ []       = []
