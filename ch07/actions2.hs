@@ -1,5 +1,4 @@
 module Main where
-import Distribution.Simple.Utils (xargs)
 
 str2message :: String -> String
 str2message = (++) "Data: "
