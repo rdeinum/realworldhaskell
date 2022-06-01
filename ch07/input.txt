@@ -1,0 +1,6 @@
+Test Input
+I like Haskkel
+Haskkel is great
+I/O is fun
+
+123456789
