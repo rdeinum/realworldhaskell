@@ -1,4 +1,4 @@
-module GlobRegex(globToRegex) where
+module GlobRegex(globToRegex, matchesGlob) where
 
 import Text.Regex.Posix
 
@@ -21,3 +21,6 @@ charClass :: String -> String
 charClass (']':xs) = ']' : globToRegex' xs
 charClass (x:xs)   = x : charClass xs
 charClass []       = error "Unterminated character class"
+
+matchesGlob :: FilePath -> String -> Bool
+filepath `matchesGlob` pat = filepath =~ globToRegex pat
