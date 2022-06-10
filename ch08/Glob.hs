@@ -6,7 +6,6 @@ import System.Posix.Files(fileExist)
 import Control.Exception (handle, SomeException (SomeException))
 import Control.Monad (forM, filterM)
 import GlobRegex (matchesGlob)
-import Llvm (LlvmCallConvention(CC_Ghc))
 
 namesMatching :: String -> IO [String]
 namesMatching globPattern
