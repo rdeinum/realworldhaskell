@@ -33,13 +33,13 @@ isPattern = any (`elem` "[?*")
 
 doesNameExist :: FilePath -> IO Bool
 doesNameExist name
-    | isUnixFS  = fileExist name
+    | isUnix  = fileExist name
     | otherwise = do
         fileExists <- doesFileExist name
         if fileExists then return True else doesDirectoryExist name
 
-isUnixFS :: Bool
-isUnixFS = pathSeparator == '/'
+isUnix :: Bool
+isUnix = pathSeparator == '/'
 
 listMatches :: FilePath -> String -> IO [String]
 listMatches dirName baseName = do
@@ -51,7 +51,7 @@ listMatches dirName baseName = do
         let names' = if isHidden baseName
                      then filter isHidden names
                      else filter (not . isHidden) names
-        return (filter (\name -> matchesGlob name baseName isUnixFS) names')
+        return (filter (\name -> matchesGlob name baseName isUnix) names')
     where 
         errorHandler :: SomeException -> IO [String]
         errorHandler = const (return [])
