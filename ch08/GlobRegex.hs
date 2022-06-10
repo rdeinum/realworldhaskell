@@ -2,22 +2,25 @@ module GlobRegex(globToRegex, matchesGlob) where
 
 import Text.Regex.Posix
 import Data.Char
+import Control.Monad
 
-globToRegex :: String -> Bool -> String
-globToRegex globPattern caseSensitive = '^' : globToRegex' globPattern caseSensitive ++ "$"
+type GlobError = String
 
-globToRegex' :: String -> Bool -> String
-globToRegex' []           _             = ""
-globToRegex' ('*':xs)     caseSensitive = ".*" ++ globToRegex' xs caseSensitive
-globToRegex' ('?':xs)     caseSensitive = '.' : globToRegex' xs caseSensitive
-globToRegex' ('[':'!':xs) caseSensitive = "[^" ++ charClass xs caseSensitive
-globToRegex' ('[':xs)     caseSensitive = '[' : charClass xs caseSensitive
-globToRegex' (x:xs)       caseSensitive = escape x caseSensitive ++ globToRegex' xs caseSensitive
+globToRegex :: String -> Bool -> Either GlobError String
+globToRegex globPattern caseSensitive = liftM (\regex -> '^' : regex ++ "$") $ globToRegex' globPattern caseSensitive
 
-charClass :: String -> Bool -> String
-charClass (']':xs) caseSensitive = ']' : globToRegex' xs caseSensitive
-charClass (x:xs)   caseSensitive = x : charClass xs caseSensitive
-charClass []       _             = error "Unterminated character class"
+globToRegex' :: String -> Bool -> Either GlobError String
+globToRegex' []           _             = Right ""
+globToRegex' ('*':xs)     caseSensitive = liftM (".*" ++) $ globToRegex' xs caseSensitive
+globToRegex' ('?':xs)     caseSensitive = liftM ('.' :) $ globToRegex' xs caseSensitive
+globToRegex' ('[':'!':xs) caseSensitive = liftM ("[^" ++) $ charClass xs caseSensitive
+globToRegex' ('[':xs)     caseSensitive = liftM ('[' :) $ charClass xs caseSensitive
+globToRegex' (x:xs)       caseSensitive = liftM (escape x caseSensitive ++) $ globToRegex' xs caseSensitive
+
+charClass :: String -> Bool -> Either GlobError String
+charClass (']':xs) caseSensitive = liftM (']' :) $ globToRegex' xs caseSensitive
+charClass (x:xs)   caseSensitive = liftM (x :) $ charClass xs caseSensitive
+charClass []       _             = Left "Unterminated character class"
 
 escape :: Char -> Bool -> String
 escape x caseSensitive = if x `elem` escapables then "\\" ++ [x] else chaseCase x
@@ -27,4 +30,6 @@ escape x caseSensitive = if x `elem` escapables then "\\" ++ [x] else chaseCase 
             | otherwise     = '(' : toLower x : '|' : toUpper x : ")"
 
 matchesGlob :: FilePath -> String -> Bool -> Bool
-matchesGlob filePath globPattern caseSensitive = filePath =~ globToRegex globPattern caseSensitive
+matchesGlob filePath globPattern caseSensitive = case globToRegex globPattern caseSensitive of
+    Left error  -> False
+    Right regex -> filePath =~ regex
