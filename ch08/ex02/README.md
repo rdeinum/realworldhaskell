@@ -4,7 +4,7 @@ While filesystems on Unix are usually case-sensitive (e.g., “G” vs. “g”)
 
 ### Answer
 
-```bash
+```ghci
 Prelude> :l GlobRegex.hs 
 [1 of 1] Compiling GlobRegex        ( GlobRegex.hs, interpreted )
 Ok, one module loaded.

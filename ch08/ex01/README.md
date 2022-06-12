@@ -4,7 +4,7 @@ Use ghci to explore what happens if you pass a malformed pattern, such as [ , to
 
 ### Answer
 
-```bash
+```ghci
 Prelude> :l GlobRegex.hs 
 [1 of 1] Compiling GlobRegex        ( GlobRegex.hs, interpreted )
 Ok, one module loaded.
