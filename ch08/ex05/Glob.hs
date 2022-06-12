@@ -1,11 +1,14 @@
 module Glob(namesMatching) where
 
+import GlobRegex ( matchesGlob )
 import System.Directory (doesDirectoryExist, doesFileExist, getCurrentDirectory, getDirectoryContents)
 import System.FilePath (dropTrailingPathSeparator, splitFileName, (</>), pathSeparator, makeRelative)
 import System.Posix.Files(fileExist)
 import Control.Exception (handle, SomeException (SomeException))
 import Control.Monad (forM, filterM)
-import Data.Char (toUpper)
+
+isPattern :: String -> Bool
+isPattern = any (`elem` "[?*")
 
 namesMatching :: String -> IO [String]
 namesMatching globPattern
@@ -31,18 +34,12 @@ namesMatching globPattern
                     return (map (makeRelative ".") baseNames')
                 return (concat pathNames)
 
-isPattern :: String -> Bool
-isPattern = any (`elem` "[?*")
-
 doesNameExist :: FilePath -> IO Bool
 doesNameExist name
     | isUnix  = fileExist name
     | otherwise = do
         fileExists <- doesFileExist name
         if fileExists then return True else doesDirectoryExist name
-
-isUnix :: Bool
-isUnix = pathSeparator == '/'
 
 listMatches :: FilePath -> String -> IO [String]
 listMatches dirName baseName = do
@@ -58,6 +55,9 @@ listMatches dirName baseName = do
 isHidden :: String -> Bool
 isHidden ('.':_) = True
 isHidden _       = False
+
+isUnix :: Bool
+isUnix = pathSeparator == '/'
 
 listPlain :: FilePath -> String -> IO [String]
 listPlain dirName baseName = do
@@ -82,34 +82,3 @@ listDirsR' dir = do
         dirs'''' <- forM dirs''' listDirsR'
         return (dir : concat dirs'''')
     where isNotSpecialDir dir = dir `notElem` [".", ".."]
-
-matchesGlob :: FilePath -> String -> Bool -> Bool
-matchesGlob [] [] _                           = True
-matchesGlob _ [] _                            = False
-matchesGlob _ "*" _                           = True
-matchesGlob [] _ _                            = False
-matchesGlob (_:ns) ('?':gs) matchCase         = matchesGlob ns gs matchCase
-matchesGlob ns ('[':'!':gs) matchCase         = notMatchClass ns gs matchCase
-matchesGlob ns ('[':gs) matchCase             = matchClass ns gs matchCase
-matchesGlob nns@(n:ns) ggs@('*':gs) matchCase = matchesGlob nns gs matchCase || matchesGlob ns ggs matchCase
-matchesGlob (n:ns) (g:gs) matchCase           = matchChar n g matchCase && matchesGlob ns gs matchCase
-
-matchClass :: String -> String -> Bool -> Bool
-matchClass _ [] _        = False
-matchClass [] _ _        = False
-matchClass _ (']':_) _   = False
-matchClass nns@(n:ns) (g:gs) matchCase
-    | matchChar n g True = matchesGlob ns (finishClass gs) matchCase
-    | otherwise          = matchClass nns gs matchCase
-    where finishClass = tail . dropWhile (/= ']')
-
-notMatchClass :: String -> String -> Bool -> Bool 
-notMatchClass _ [] _                      = False
-notMatchClass [] _ _                      = False
-notMatchClass (n:ns) (']':gs) matchCase   = matchesGlob ns gs matchCase
-notMatchClass nns@(n:ns) (g:gs) matchCase = not (matchChar n g True) && notMatchClass nns gs matchCase
-
-matchChar :: Char -> Char -> Bool -> Bool
-matchChar x y matchCase
-    | matchCase = x == y
-    | otherwise = toUpper x == toUpper y
