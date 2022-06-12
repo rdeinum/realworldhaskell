@@ -41,7 +41,7 @@ listMatches dirName baseName = do
     handle errorHandler $ do
         names <- getDirectoryContents dirName'
         let names' = if isHidden baseName then filter isHidden names else filter (not . isHidden) names
-        return (filter (`matchesGlob` baseName) names')
+        return (filter (\name -> matchesGlob name baseName isUnix) names')
     where 
         errorHandler :: SomeException -> IO [String]
         errorHandler = const (return [])
@@ -49,6 +49,9 @@ listMatches dirName baseName = do
 isHidden :: String -> Bool
 isHidden ('.':_) = True
 isHidden _       = False
+
+isUnix :: Bool
+isUnix = pathSeparator == '/'
 
 listPlain :: FilePath -> String -> IO [String]
 listPlain dirName baseName = do

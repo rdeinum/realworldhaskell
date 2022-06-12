@@ -3,6 +3,7 @@ module Glob(namesMatching) where
 import GlobRegex ( matchesGlob )
 import System.Directory (doesDirectoryExist, doesFileExist, getCurrentDirectory, getDirectoryContents)
 import System.FilePath (dropTrailingPathSeparator, splitFileName, (</>), pathSeparator, makeRelative)
+import System.Posix.Files(fileExist)
 import Control.Exception (handle, SomeException (SomeException))
 import Control.Monad (forM)
 
@@ -31,9 +32,11 @@ namesMatching globPattern
                 return (concat pathNames)
 
 doesNameExist :: FilePath -> IO Bool
-doesNameExist name = do
-    fileExists <- doesFileExist name
-    if fileExists then return True else doesDirectoryExist name
+doesNameExist name
+    | isUnix  = fileExist name
+    | otherwise = do
+        fileExists <- doesFileExist name
+        if fileExists then return True else doesDirectoryExist name
 
 listMatches :: FilePath -> String -> IO [String]
 listMatches dirName baseName = do
@@ -41,7 +44,7 @@ listMatches dirName baseName = do
     handle errorHandler $ do
         names <- getDirectoryContents dirName'
         let names' = if isHidden baseName then filter isHidden names else filter (not . isHidden) names
-        return (filter (`matchesGlob` baseName) names')
+        return (filter (\name -> matchesGlob name baseName isUnix) names')
     where 
         errorHandler :: SomeException -> IO [String]
         errorHandler = const (return [])
@@ -49,6 +52,9 @@ listMatches dirName baseName = do
 isHidden :: String -> Bool
 isHidden ('.':_) = True
 isHidden _       = False
+
+isUnix :: Bool
+isUnix = pathSeparator == '/'
 
 listPlain :: FilePath -> String -> IO [String]
 listPlain dirName baseName = do
