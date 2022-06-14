@@ -1,2 +1,2 @@
 # realworldhaskell
-My solutions for the assignments from the book Real World Haskell.
+My take on the book Real World Haskell.
