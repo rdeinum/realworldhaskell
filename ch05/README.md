@@ -26,7 +26,6 @@ ghci> putStrLn . pretty 80 $ renderJValue (JObject [("f", JNumber 1), ("q", JBoo
 ```
 
 ## Exercise 1
-
 Our current pretty printer is spartan so that it will fit within our space constraints, but there are a number of useful improvements we can make. Write a function, fill , with the following type signature:
 
 ```haskell
@@ -47,7 +46,6 @@ ghci> fill 7 $ text "hello"
 ```
 
 ## Exercise 2
-
 Our pretty printer does not take nesting into account. Whenever we open parentheses, braces, or brackets, any lines that follow should be indented so that they are aligned with the opening character until a matching closing character is encountered. Add support for nesting, with a controllable amount of indentation: 
 
 ```haskell

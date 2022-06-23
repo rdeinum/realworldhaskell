@@ -1,9 +1,7 @@
 ## Exercise 1
-
 Is the order in which we call bracket and handle important? Why?
 
 ### Answer
-
 If you flip the order of `brackets` and `handle` you get:
 
 ```haskell

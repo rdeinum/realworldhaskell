@@ -1,5 +1,4 @@
 ## Exercise 6
-
 Write a version of globToRegex that uses the type signature shown earlier.
 
 ### Answer

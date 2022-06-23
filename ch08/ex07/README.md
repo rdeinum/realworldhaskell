@@ -1,5 +1,4 @@
 ## Exercise 7
-
 Modify the type signature of namesMatching so that it encodes the possibility of a bad pattern, and make it use your rewritten globToRegex function.
 
 ### Answer

@@ -1,9 +1,7 @@
 ## Exercise 4
-
 If you’re on a Unix-like system, look through the documentation for the System.Posix.Files module, and see if you can find a replacement for the doesNameExist function.
 
 ### Answer
-
 Imported in `Glob.hs`:
 
 ```haskell

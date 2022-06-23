@@ -1,5 +1,4 @@
 ## Exercise 1
-
 Use ghci to explore what happens if you pass a malformed pattern, such as [ , to globToRegex . Write a small function that calls globToRegex , and pass it a malformed pattern. What happens?
 
 ### Answer

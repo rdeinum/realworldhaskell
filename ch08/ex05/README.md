@@ -1,9 +1,7 @@
 ## Exercise 5
-
 The * wild card matches names only within a single directory. Many shells have an extended wild card syntax, ** , that matches names recursively in all directories. For example, **.c would mean “match a name ending in .c in this directory or any subdirectory at any depth”. Implement matching on ** wild cards.
 
 ### Answer
-
 Changed the part of `namesMatching` where the function for matching is determined:
 
 ```haskell
