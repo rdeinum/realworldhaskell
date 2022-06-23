@@ -9,14 +9,16 @@ ghc -o simple Main.hs
 
 ## Example 2
 
-```bash
+```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 ghci> :l PutJSON.hs
 ghci> putJValue (JObject [("foo", JNumber 1), ("bar", JBool False)])
 ```
 
 ## Example 3
 
-```bash
+```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 ghci> :l PrettyJSON.hs
 ghci> import Prettify
 ghci> putStrLn . compact $ renderJValue (JObject [("f", JNumber 1), ("q", JBool True)])
@@ -36,7 +38,8 @@ It should add spaces to a document until it is the given number of columns wide.
 
 ### Answer
 
-```bash
+```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 ghci> :l Prettify.hs
 ghci> fill 5 $ text "hello"
 ghci> fill 6 $ text "hello"
@@ -54,7 +57,8 @@ fill :: Int -> Doc -> Doc
 
 ### Answer
 
-```bash
+```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 ghci> :l PrettyJSON.hs
 ghci> import Prettify
 ghci> putStrLn . indent 4 $ renderJValue (JObject [("f", JNumber 1), ("q", JBool True)])

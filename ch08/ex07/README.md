@@ -5,6 +5,7 @@ Modify the type signature of namesMatching so that it encodes the possibility of
 ### Answer
 
 ```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 Prelude> :l Glob
 [1 of 2] Compiling GlobRegex        ( GlobRegex.hs, interpreted )
 [2 of 2] Compiling Glob             ( Glob.hs, interpreted )

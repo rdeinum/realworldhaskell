@@ -20,6 +20,7 @@ return (filter (\name -> matchesGlob name baseName isUnix) names')
 When run on Unix in GHCi the matching will be done case sensitive:
 
 ```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 Prelude> :l Glob.hs 
 [1 of 2] Compiling GlobRegex        ( GlobRegex.hs, interpreted )
 [2 of 2] Compiling Glob             ( Glob.hs, interpreted )

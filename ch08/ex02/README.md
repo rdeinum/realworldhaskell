@@ -5,6 +5,7 @@ While filesystems on Unix are usually case-sensitive (e.g., “G” vs. “g”)
 ### Answer
 
 ```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 Prelude> :l GlobRegex.hs 
 [1 of 1] Compiling GlobRegex        ( GlobRegex.hs, interpreted )
 Ok, one module loaded.

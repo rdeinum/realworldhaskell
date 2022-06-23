@@ -19,6 +19,7 @@ getFileSize path = bracket (openFile path ReadMode) hClose $ \h -> do
 When `openFile` raises an exception, e.g. if `path` is a directory instead of a file, then that exception will not be taken care of:
 
 ```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 Prelude> :l BetterPredicate
 [1 of 1] Compiling BetterPredicate  ( BetterPredicate.hs, interpreted )
 Ok, one module loaded.

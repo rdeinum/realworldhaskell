@@ -37,6 +37,7 @@ listDirsR' dir = do
 When run in GHCi:
 
 ```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 Prelude> :l Glob
 [1 of 2] Compiling GlobRegex        ( GlobRegex.hs, interpreted )
 [2 of 2] Compiling Glob             ( Glob.hs, interpreted )

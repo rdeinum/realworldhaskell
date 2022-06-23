@@ -5,6 +5,7 @@ Use ghci to explore what happens if you pass a malformed pattern, such as [ , to
 ### Answer
 
 ```ghci
+GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? for help
 Prelude> :l GlobRegex.hs 
 [1 of 1] Compiling GlobRegex        ( GlobRegex.hs, interpreted )
 Ok, one module loaded.
