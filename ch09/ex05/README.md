@@ -3,4 +3,4 @@ Write a wrapper for `traverse` that lets you control traversal using one predica
 
 ### Answer
 
-See Ex05.hs
+See [Ex05.hs](Ex05.hs)
