@@ -1,4 +1,4 @@
-module ControlledVisit(traverse) where
+module ControlledVisit where
 
 import System.Directory (Permissions (searchable), getDirectoryContents, getPermissions, getFileSize, getModificationTime)
 import System.FilePath ( (</>) )
