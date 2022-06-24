@@ -15,12 +15,12 @@ data FoldState a =
 
 type FoldFunction a = a -> FileInfo -> FoldState a
 
-foldDirectory :: FoldFunction a -> a -> FilePath -> IO a
-foldDirectory f acc dir = do
+foldDirectory :: FoldFunction a -> a -> ([FilePath] -> [FilePath]) -> FilePath -> IO a
+foldDirectory f acc ord dir = do
     state <- fold acc dir
     return (accumulator state)
     where
-        fold acc dir' = listDirectory dir' >>= walk acc
+        fold acc dir' = listDirectory dir' >>= walk acc . ord
         walk acc (name:names) = do
             let path = dir </> name
             info <- getFileInfo path
